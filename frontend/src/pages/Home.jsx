@@ -77,7 +77,7 @@ function Home() {
             borderRadius: 3,
             textTransform: 'none',
             boxShadow: '0 10px 24px rgba(18,115,209,0.35)',
-            background: 'linear-gradient(90deg, #1273d1, #0f5ea8)',
+            background: 'linear-gradient(#0f5ea8)',
             '&:hover': { filter: 'brightness(1.05)', boxShadow: '0 14px 28px rgba(18,115,209,0.45)' }
           }}>
             Get Started

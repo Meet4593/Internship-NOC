@@ -4,7 +4,7 @@ import { Link as RouterLink, NavLink } from 'react-router-dom'
 function NavBar() {
   return (
     <AppBar position="sticky" color="primary" elevation={8} sx={{
-      background: 'linear-gradient(90deg, #0a3d62 0%, #0f5ea8 50%, #1273d1 100%)'
+      background: 'linear-gradient( #0f5ea8 )'
     }}>
       <Container maxWidth="lg">
         <Toolbar disableGutters sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -33,13 +33,15 @@ function NavBar() {
               Home
             </Button>
             <Button color="inherit" component={NavLink} to="/about" sx={{
-              '&.active': { bgcolor: 'rgba(255,255,255,0.12)' }, borderRadius: 2
+              '&.active': { bgcolor: '#0f5ea8' }, borderRadius: 2
             }}>
               About
             </Button>
-            <Button variant="contained" color="secondary" component={NavLink} to="/login" sx={{
-              ml: 1, fontWeight: 700, borderRadius: 2, textTransform: 'none',
-              boxShadow: '0 6px 12px rgba(0,0,0,0.2)'
+            <Button variant="contained" color="inherit" component={NavLink} to="/login" sx={{
+              // ml: 1, fontWeight: 700, borderRadius: 2, textTransform: 'none',
+              // boxShadow: '0 6px 12px rgba(0,0,0,0.2)',        
+              borderRadius: 2,
+              bgcolor: '#0f5ea8' 
             }}>
               Login
             </Button>

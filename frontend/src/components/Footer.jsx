@@ -6,7 +6,7 @@ function Footer() {
     <Box component="footer" sx={{
       mt: 'auto',
       py: 4,
-      background: 'linear-gradient(90deg, #0a3d62 0%, #0f5ea8 50%, #1273d1 100%)',
+      background: 'linear-gradient(#0f5ea8)',
       color: '#fff'
     }}>
       <Container maxWidth="lg" sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
