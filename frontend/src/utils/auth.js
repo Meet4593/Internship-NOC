@@ -4,7 +4,7 @@
  * TODO: Replace with Google OAuth that enforces @charusat.edu.in and @charusat.ac.in domains
  */
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'
 
 /**
  * Login request to backend API
