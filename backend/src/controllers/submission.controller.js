@@ -1,11 +1,13 @@
 const Submission = require('../models/Submission');
 const { ROLES } = require('../config/roles');
 const { notifyUser } = require('../utils/notify');
+const { getFileUrl } = require('../utils/storage');
 
 exports.createSubmission = async (req, res) => {
 	try {
 		const { companyName, companyAddress, position, startDate, endDate } = req.body;
-		if (!req.file || !req.file.location) return res.status(400).json({ message: 'Upload missing' });
+		if (!req.file) return res.status(400).json({ message: 'Upload missing' });
+		const letterUrl = getFileUrl(req.file.filename);
 		const submission = await Submission.create({
 			student: req.user.id,
 			companyName,
@@ -13,7 +15,7 @@ exports.createSubmission = async (req, res) => {
 			position,
 			startDate,
 			endDate,
-			letterUrl: req.file.location,
+			letterUrl,
 		});
 		// Notify student about successful submission
 		await notifyUser(req.user.id, 'Your internship company profile letter was submitted.');

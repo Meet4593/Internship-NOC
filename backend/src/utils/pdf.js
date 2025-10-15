@@ -1,26 +1,20 @@
 const PDFDocument = require('pdfkit');
-const { s3 } = require('./s3');
+const fs = require('fs');
+const path = require('path');
 
 async function generateNocPdf({ studentName, companyName, position, startDate, endDate, submissionId }) {
 	return new Promise((resolve, reject) => {
 		const doc = new PDFDocument({ size: 'A4', margin: 50 });
-		const key = `noc/noc-${submissionId}.pdf`;
-		const upload = s3.upload({
-			Bucket: process.env.AWS_S3_BUCKET,
-			Key: key,
-			ACL: 'private',
-			ContentType: 'application/pdf',
-			Body: undefined, // will be stream
-		});
+		const fileName = `noc-${submissionId}.pdf`;
+		const filePath = path.join(__dirname, '../../uploads', fileName);
+		
+		// Ensure uploads directory exists
+		const uploadsDir = path.dirname(filePath);
+		if (!fs.existsSync(uploadsDir)) {
+			fs.mkdirSync(uploadsDir, { recursive: true });
+		}
 
-		const passThrough = upload.createReadStream ? upload.createReadStream() : null;
-		// Fallback: use managed upload with streams
-		const stream = doc.pipe(s3.upload({
-			Bucket: process.env.AWS_S3_BUCKET,
-			Key: key,
-			ACL: 'private',
-			ContentType: 'application/pdf',
-		}).createWriteStream());
+		const stream = fs.createWriteStream(filePath);
 
 		doc.fontSize(18).text('No Objection Certificate', { align: 'center' });
 		doc.moveDown();
@@ -33,13 +27,14 @@ async function generateNocPdf({ studentName, companyName, position, startDate, e
 		doc.text('Authorized Signatory');
 		doc.text('Institute Name');
 
-		doc.end();
+		doc.pipe(stream);
 
 		stream.on('close', () => {
-			const url = `s3://${process.env.AWS_S3_BUCKET}/${key}`; // private URL; use signed URLs for download
-			resolve({ key, url });
+			const url = `/uploads/${fileName}`;
+			resolve({ key: fileName, url });
 		});
 		stream.on('error', reject);
+		doc.end();
 	});
 }
 

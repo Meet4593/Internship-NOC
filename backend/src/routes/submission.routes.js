@@ -2,7 +2,7 @@ const router = require('express').Router();
 const { authenticate, authorize } = require('../middleware/auth');
 const { ROLES } = require('../config/roles');
 const ctrl = require('../controllers/submission.controller');
-const { upload } = require('../utils/s3');
+const { upload } = require('../utils/storage');
 
 // Student creates submission with letter upload
 router.post('/', authenticate, authorize(ROLES.STUDENT), upload.single('letter'), ctrl.createSubmission);

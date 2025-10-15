@@ -1,6 +1,7 @@
 import { Box, Button, Card, CardContent, Container, Grid, Typography } from '@mui/material'
-import { School, TaskAlt, PictureAsPdf } from '@mui/icons-material'
+import { School, TaskAlt, PictureAsPdf, Add, Visibility } from '@mui/icons-material'
 import { Link as RouterLink } from 'react-router-dom'
+import { useAuth } from '../contexts/AuthContext'
 
 function FeatureCard({ icon, title, description }) {
   return (
@@ -34,6 +35,8 @@ function FeatureCard({ icon, title, description }) {
 }
 
 function Home() {
+  const { user, isLoggedIn } = useAuth()
+
   return (
     <Box sx={{
       minHeight: '100vh',
@@ -65,23 +68,69 @@ function Home() {
             mb: 2,
             fontSize: { xs: 18, md: 22 }
           }}>
-            Seamless Internship Approval & NOC Generation System
+            {isLoggedIn ? `Welcome back, ${user?.name || 'User'}!` : 'Seamless Internship Approval & NOC Generation System'}
           </Typography>
           <Typography variant="body1" sx={{ maxWidth: 720, mx: 'auto', color: 'text.secondary', mb: 4 }}>
-            Submit your internship company profile, track approvals, and download your NOC — all in one place.
+            {isLoggedIn 
+              ? 'Manage your internship submissions, track approvals, and download your NOC documents.'
+              : 'Submit your internship company profile, track approvals, and download your NOC — all in one place.'
+            }
           </Typography>
-          <Button component={RouterLink} to="/login" size="large" variant="contained" sx={{
-            px: 4,
-            py: 1.4,
-            fontWeight: 800,
-            borderRadius: 3,
-            textTransform: 'none',
-            boxShadow: '0 10px 24px rgba(18,115,209,0.35)',
-            background: 'linear-gradient(#0f5ea8)',
-            '&:hover': { filter: 'brightness(1.05)', boxShadow: '0 14px 28px rgba(18,115,209,0.45)' }
-          }}>
-            Get Started
-          </Button>
+          
+          {isLoggedIn ? (
+            <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
+              <Button 
+                size="large" 
+                variant="contained" 
+                startIcon={<Add />}
+                sx={{
+                  px: 4,
+                  py: 1.4,
+                  fontWeight: 800,
+                  borderRadius: 3,
+                  textTransform: 'none',
+                  boxShadow: '0 10px 24px rgba(18,115,209,0.35)',
+                  background: 'linear-gradient(#0f5ea8)',
+                  '&:hover': { filter: 'brightness(1.05)', boxShadow: '0 14px 28px rgba(18,115,209,0.45)' }
+                }}
+              >
+                New Submission
+              </Button>
+              <Button 
+                size="large" 
+                variant="outlined" 
+                startIcon={<Visibility />}
+                sx={{
+                  px: 4,
+                  py: 1.4,
+                  fontWeight: 700,
+                  borderRadius: 3,
+                  textTransform: 'none',
+                  borderColor: '#0f5ea8',
+                  color: '#0f5ea8',
+                  '&:hover': {
+                    borderColor: '#0d4a8a',
+                    backgroundColor: 'rgba(15,94,168,0.04)',
+                  }
+                }}
+              >
+                View Submissions
+              </Button>
+            </Box>
+          ) : (
+            <Button component={RouterLink} to="/login" size="large" variant="contained" sx={{
+              px: 4,
+              py: 1.4,
+              fontWeight: 800,
+              borderRadius: 3,
+              textTransform: 'none',
+              boxShadow: '0 10px 24px rgba(18,115,209,0.35)',
+              background: 'linear-gradient(#0f5ea8)',
+              '&:hover': { filter: 'brightness(1.05)', boxShadow: '0 14px 28px rgba(18,115,209,0.45)' }
+            }}>
+              Get Started
+            </Button>
+          )}
         </Container>
       </Box>
 

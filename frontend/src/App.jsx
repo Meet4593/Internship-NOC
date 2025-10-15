@@ -5,18 +5,21 @@ import Footer from './components/Footer'
 import Home from './pages/Home'
 import About from './pages/About'
 import Login from './pages/Login'
+import { AuthProvider } from './contexts/AuthContext'
 
 function App() {
   return (
-    <div className="app-root">
-      <NavBar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/login" element={<Login />} />
-      </Routes>
-      <Footer />
-    </div>
+    <AuthProvider>
+      <div className="app-root">
+        <NavBar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/login" element={<Login />} />
+        </Routes>
+        <Footer />
+      </div>
+    </AuthProvider>
   )
 }
 

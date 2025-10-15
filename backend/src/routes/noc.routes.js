@@ -7,7 +7,7 @@ const ctrl = require('../controllers/noc.controller');
 router.post('/:id/generate', authenticate, authorize(ROLES.HOD), ctrl.generateForSubmission);
 
 // Student downloads NOC
-router.get('/download/:id', authenticate, authorize(ROLES.STUDENT, ROLES.FACULTY, ROLES.HOD), ctrl.getSignedDownloadUrl);
+router.get('/download/:id', authenticate, authorize(ROLES.STUDENT, ROLES.FACULTY, ROLES.HOD), ctrl.downloadNoc);
 
 module.exports = router;
 

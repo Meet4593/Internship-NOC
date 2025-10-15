@@ -1,7 +1,7 @@
 const Noc = require('../models/Noc');
 const Submission = require('../models/Submission');
 const { generateNocPdf } = require('../utils/pdf');
-const { s3 } = require('../utils/s3');
+const { serveFile } = require('../utils/storage');
 const { notifyUser } = require('../utils/notify');
 
 exports.generateForSubmission = async (req, res) => {
@@ -19,8 +19,7 @@ exports.generateForSubmission = async (req, res) => {
 			endDate: submission.endDate,
 			submissionId: submission._id.toString(),
 		});
-		const fileUrl = `s3://${process.env.AWS_S3_BUCKET}/${key}`;
-		const noc = await Noc.create({ submission: submission._id, student: submission.student._id, fileUrl });
+		const noc = await Noc.create({ submission: submission._id, student: submission.student._id, fileUrl: url });
 		await notifyUser(submission.student._id, 'Your NOC has been generated and is ready to download.');
 		return res.status(201).json(noc);
 	} catch (err) {
@@ -28,19 +27,13 @@ exports.generateForSubmission = async (req, res) => {
 	}
 };
 
-exports.getSignedDownloadUrl = async (req, res) => {
+exports.downloadNoc = async (req, res) => {
 	try {
 		const noc = await Noc.findById(req.params.id);
 		if (!noc) return res.status(404).json({ message: 'NOC not found' });
-		const key = noc.fileUrl.replace(`s3://${process.env.AWS_S3_BUCKET}/`, '');
-		const signedUrl = await s3.getSignedUrlPromise('getObject', {
-			Bucket: process.env.AWS_S3_BUCKET,
-			Key: key,
-			Expires: 60, // seconds
-		});
-		return res.json({ url: signedUrl });
+		serveFile(req, res, noc.fileUrl);
 	} catch (err) {
-		return res.status(500).json({ message: 'Failed to get download URL' });
+		return res.status(500).json({ message: 'Failed to download NOC' });
 	}
 };
 

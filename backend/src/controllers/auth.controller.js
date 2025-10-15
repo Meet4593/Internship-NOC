@@ -36,3 +36,42 @@ exports.login = async (req, res) => {
 	}
 };
 
+// Simple login for dashboard demo with hardcoded credentials
+// TODO: Replace with Google OAuth that enforces @charusat.edu.in and @charusat.ac.in domains
+exports.simpleLogin = async (req, res) => {
+	try {
+		const { email, password } = req.body;
+		
+		// Hardcoded credentials for demo
+		const DEMO_EMAIL = 'admin@charusat.edu.in';
+		const DEMO_PASSWORD = '12345';
+		
+		if (email === DEMO_EMAIL && password === DEMO_PASSWORD) {
+			// Generate a simple token for demo purposes
+			const token = `demo-token-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+			
+			return res.json({
+				success: true,
+				email: DEMO_EMAIL,
+				token: token,
+				user: {
+					id: 'demo-user-id',
+					name: 'Admin User',
+					email: DEMO_EMAIL,
+					role: 'student'
+				}
+			});
+		}
+		
+		return res.status(401).json({ 
+			success: false,
+			message: 'Invalid credentials. Use admin@charusat.edu.in / 12345' 
+		});
+	} catch (err) {
+		return res.status(500).json({ 
+			success: false,
+			message: 'Login failed' 
+		});
+	}
+};
+

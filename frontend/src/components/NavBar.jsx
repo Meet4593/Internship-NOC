@@ -1,7 +1,26 @@
-import { AppBar, Box, Button, Container, Toolbar, Typography } from '@mui/material'
+import { AppBar, Box, Button, Container, Toolbar, Typography, Menu, MenuItem, Avatar, Chip } from '@mui/material'
 import { Link as RouterLink, NavLink } from 'react-router-dom'
+import { useState } from 'react'
+import { Logout, AccountCircle, Dashboard } from '@mui/icons-material'
+import { useAuth } from '../contexts/AuthContext'
 
 function NavBar() {
+  const { user, logout, isLoggedIn } = useAuth()
+  const [anchorEl, setAnchorEl] = useState(null)
+
+  const handleProfileMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget)
+  }
+
+  const handleMenuClose = () => {
+    setAnchorEl(null)
+  }
+
+  const handleLogout = () => {
+    logout()
+    handleMenuClose()
+  }
+
   return (
     <AppBar position="sticky" color="primary" elevation={8} sx={{
       background: 'linear-gradient( #0f5ea8 )'
@@ -33,18 +52,72 @@ function NavBar() {
               Home
             </Button>
             <Button color="inherit" component={NavLink} to="/about" sx={{
-              '&.active': { bgcolor: '#0f5ea8' }, borderRadius: 2
+              '&.active': { bgcolor: 'rgba(255,255,255,0.12)' }, borderRadius: 2
             }}>
               About
             </Button>
-            <Button variant="contained" color="inherit" component={NavLink} to="/login" sx={{
-              // ml: 1, fontWeight: 700, borderRadius: 2, textTransform: 'none',
-              // boxShadow: '0 6px 12px rgba(0,0,0,0.2)',        
-              borderRadius: 2,
-              bgcolor: '#0f5ea8' 
-            }}>
-              Login
-            </Button>
+            
+            {isLoggedIn ? (
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, ml: 2 }}>
+                <Chip
+                  label={`Welcome, ${user?.name || 'User'}`}
+                  avatar={<Avatar sx={{ bgcolor: 'rgba(255,255,255,0.2)', width: 24, height: 24 }}>
+                    {user?.name?.charAt(0) || 'U'}
+                  </Avatar>}
+                  sx={{ 
+                    color: 'white', 
+                    bgcolor: 'rgba(255,255,255,0.1)',
+                    '& .MuiChip-avatar': { color: 'white' }
+                  }}
+                />
+                <Button
+                  color="inherit"
+                  onClick={handleProfileMenuOpen}
+                  startIcon={<AccountCircle />}
+                  sx={{ borderRadius: 2 }}
+                >
+                  Account
+                </Button>
+                <Menu
+                  anchorEl={anchorEl}
+                  open={Boolean(anchorEl)}
+                  onClose={handleMenuClose}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'right',
+                  }}
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                >
+                  <MenuItem onClick={handleMenuClose}>
+                    <Dashboard sx={{ mr: 1 }} />
+                    Dashboard
+                  </MenuItem>
+                  <MenuItem onClick={handleLogout}>
+                    <Logout sx={{ mr: 1 }} />
+                    Logout
+                  </MenuItem>
+                </Menu>
+              </Box>
+            ) : (
+              <Button 
+                variant="contained" 
+                color="inherit" 
+                component={NavLink} 
+                to="/login" 
+                sx={{
+                  borderRadius: 2,
+                  bgcolor: 'rgba(255,255,255,0.15)',
+                  '&:hover': {
+                    bgcolor: 'rgba(255,255,255,0.25)',
+                  }
+                }}
+              >
+                Login
+              </Button>
+            )}
           </Box>
         </Toolbar>
       </Container>
@@ -53,5 +126,3 @@ function NavBar() {
 }
 
 export default NavBar
-
-

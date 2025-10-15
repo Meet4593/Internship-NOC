@@ -10,6 +10,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
+app.use('/uploads', express.static('uploads'));
 
 // Health
 app.get('/health', (_req, res) => {
@@ -27,12 +28,22 @@ const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/internship
 
 async function start() {
 	try {
+		console.log('🚀 Starting backend server...');
+		console.log(`📡 Connecting to MongoDB at: ${MONGO_URI}`);
+		
 		await mongoose.connect(MONGO_URI);
+		console.log('✅ MongoDB connected successfully!');
+		
 		app.listen(PORT, () => {
-			console.log(`Server running on http://localhost:${PORT}`);
+			console.log('🎉 Backend server started successfully!');
+			console.log(`🌐 Server running on: http://localhost:${PORT}`);
+			console.log(`📊 Health check: http://localhost:${PORT}/health`);
+			console.log('📁 Static files served from: /uploads');
+			console.log('🔧 Ready to handle requests!');
 		});
 	} catch (err) {
-		console.error('Failed to start server', err);
+		console.error('❌ Failed to start server:', err.message);
+		console.error('💡 Make sure MongoDB is running on port 27017');
 		process.exit(1);
 	}
 }
